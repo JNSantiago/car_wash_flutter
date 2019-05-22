@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 
 import 'package:car_wash/providers/auth.dart';
+import 'package:car_wash/models/user.dart';
+
+import 'package:car_wash/providers/preferences.dart';
 
 import 'dart:developer';
 
@@ -11,25 +14,46 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   final formKey = new GlobalKey<FormState>();
+  final scaffoldKey = new GlobalKey<ScaffoldState>();
   bool _isLoading = false;
 
-  String _email, _password;
+  String _email = 'eve.holt@reqres.in', _password = 'cityslicka';
 
   void _onSubmit() {
     log('data');
     final form = formKey.currentState;
-    if(form.validate()) {
-      setState(() => _isLoading = true );
+    if (form.validate()) {
+      setState(() => _isLoading = true);
       form.save();
 
       AuthProvider authProvider = new AuthProvider();
-      //var res = authProvider.login(_username, _password);
-      authProvider.login("eve.holt@reqres.in", "cityslicka")
-        .then((res) {
-          setState(() => _isLoading = false );
-          Navigator.pushNamed(context, 'home');
-        });
+      User user = new User('eve.holt@reqres.in', 'cityslicka');
+      authProvider.login(user).then((res) {
+        print(res);
+        if (!res.containsKey("error")) {
+          PreferencesProvider prefs = new PreferencesProvider();
+          prefs.create(user).then((res) {
+            setState(() => _isLoading = false);
+            Navigator.pushNamed(context, 'home');
+          }).catchError((onError) {
+            print('caiu no catch');
+            _loginError();
+          });
+        }
+
+        _loginError();
+      });
     }
+  }
+
+  void _loginError() {
+    setState(() => _isLoading = false);
+        _showSnackbar(
+            'Ocorreu um erro! Verifique as credenciais e a conexão e tente novamente.');
+  }
+
+  void _showSnackbar(String text) {
+    scaffoldKey.currentState.showSnackBar(SnackBar(content: Text(text)));
   }
 
   @override
@@ -51,10 +75,9 @@ class _LoginScreenState extends State<LoginScreen> {
                 child: TextFormField(
                   onSaved: (val) => _email = val,
                   decoration: InputDecoration(
-                    labelText: "Email",
-                    labelStyle: TextStyle(color: Colors.amber),
-                    border: OutlineInputBorder()
-                  ),
+                      labelText: "Email",
+                      labelStyle: TextStyle(color: Colors.amber),
+                      border: OutlineInputBorder()),
                 ),
               ),
               Padding(
@@ -62,10 +85,9 @@ class _LoginScreenState extends State<LoginScreen> {
                 child: TextFormField(
                   onSaved: (val) => _password = val,
                   decoration: InputDecoration(
-                    labelText: "Senha",
-                    labelStyle: TextStyle(color: Colors.amber),
-                    border: OutlineInputBorder()
-                  ),
+                      labelText: "Senha",
+                      labelStyle: TextStyle(color: Colors.amber),
+                      border: OutlineInputBorder()),
                 ),
               ),
               _isLoading ? CircularProgressIndicator() : loginButton
@@ -77,6 +99,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
     return Scaffold(
       appBar: null,
+      key: scaffoldKey,
       body: Container(
         child: loginForm,
       ),

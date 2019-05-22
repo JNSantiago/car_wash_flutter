@@ -2,6 +2,9 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
+import 'package:car_wash/models/user.dart';
+import 'package:car_wash/providers/preferences.dart';
+
 class AuthProvider {
   static AuthProvider _instance = new AuthProvider.internal();
   AuthProvider.internal();
@@ -12,17 +15,10 @@ class AuthProvider {
 
   final JsonDecoder _decoder = new JsonDecoder();
 
-  Future<dynamic> login(String email, String password){
-    return http.post(LOGIN_URL, body: { "email":  email, "password": password})
+  Future<dynamic> login(User user){
+    return http.post(LOGIN_URL, body: { "email":  user.email, "password": user.password })
       .then((http.Response response) {
-        final String res = response.body;
-        final int statusCode = response.statusCode;
-
-        if (statusCode < 200 || statusCode > 400 || json == null) {
-          throw new Exception("Error while fetching data");
-        }
-
-        return _decoder.convert(res);
+        return _decoder.convert(response.body);
       });
   }
 }
