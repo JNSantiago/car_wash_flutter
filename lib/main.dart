@@ -6,12 +6,12 @@ void main() => runApp(CarWash());
 class CarWash extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+
     return MaterialApp(
-      title: 'Car Wash',
-      theme: ThemeData(
-        primarySwatch: Colors.blue
-      ),
-      routes: routes
+        title: 'Car Wash',
+        initialRoute: '/',
+        theme: ThemeData(primarySwatch: Colors.blue),
+        routes: routes
     );
   }
 }

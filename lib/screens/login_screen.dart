@@ -17,7 +17,7 @@ class _LoginScreenState extends State<LoginScreen> {
   final scaffoldKey = new GlobalKey<ScaffoldState>();
   bool _isLoading = false;
 
-  String _email = 'eve.holt@reqres.in', _password = 'cityslicka';
+  String _email, _password;
 
   void _onSubmit() {
     log('data');
@@ -27,7 +27,7 @@ class _LoginScreenState extends State<LoginScreen> {
       form.save();
 
       AuthProvider authProvider = new AuthProvider();
-      User user = new User('eve.holt@reqres.in', 'cityslicka');
+      User user = new User(_email, _password);
       authProvider.login(user).then((res) {
         print(res);
         if (!res.containsKey("error")) {
@@ -36,7 +36,6 @@ class _LoginScreenState extends State<LoginScreen> {
             setState(() => _isLoading = false);
             Navigator.pushNamed(context, 'home');
           }).catchError((onError) {
-            print('caiu no catch');
             _loginError();
           });
         }

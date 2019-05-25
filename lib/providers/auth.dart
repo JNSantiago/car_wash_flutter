@@ -10,7 +10,7 @@ class AuthProvider {
   AuthProvider.internal();
   factory AuthProvider() => _instance;
 
-  static final BASE_URL = "https://reqres.in/api/";
+  static final BASE_URL = "http://35.222.195.118/api-base-laravel/public/api/";
   static final LOGIN_URL = BASE_URL + "login";
 
   final JsonDecoder _decoder = new JsonDecoder();
