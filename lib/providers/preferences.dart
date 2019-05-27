@@ -21,6 +21,11 @@ class PreferencesProvider {
     return prefs.setString("user", json.encode(user.toString()));
   }
 
+  Future logout() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.remove("user");
+  }
+
   Future<bool> isLoggedIn() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     if(prefs.getString("user") == null) 
