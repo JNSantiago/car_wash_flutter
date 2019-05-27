@@ -92,6 +92,14 @@ class _LoginScreenState extends State<LoginScreen> {
               _isLoading ? CircularProgressIndicator() : loginButton
             ],
           ),
+        ),
+        Center(
+          child: InkWell(
+            child: Text('Não tem uma conta? Cadastre-se'),
+            onTap: () {
+              Navigator.pushNamed(context, 'register');
+            },
+          ),
         )
       ],
     );
